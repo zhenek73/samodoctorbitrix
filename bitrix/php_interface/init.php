@@ -56,6 +56,51 @@ class Treatments
         }
         return $course;
     }
+    public function getTreatmentByTId($еid)/*
+        json гет запрос на получения списка лечебных назначений по ИД назначения
+    */
+    {
+        $arFilter = Array("IBLOCK_ID" => self::$tiblock, "ACTIVE" => "Y", "ID" => $tid);
+        $qrating = CIBlockElement::GetList(Array(), $arFilter, false, Array(), Array());
+
+        $course=array();
+
+        while ($fld = $qrating->GetNextElement()) {
+            $fields = $fld->GetFields();
+            $props = $fld->GetProperties();
+            $course[]=array(
+                'id' => $fields['ID'],
+                'uid' => $props['PATIENT']['VALUE'],
+                'description' => $fields['PREVIEW_TEXT'],
+                'name' =>  $fields['NAME'],
+            );
+        }
+
+        return $course;
+    }
+
+    public function getIlnessByIId($id)/*
+         гет запрос на получения информаци о болезни по ее ид
+    */
+    {
+        $arFilter = Array("IBLOCK_ID" => self::$tiblock, "ACTIVE" => "Y", "ID" => $id);
+        $qrating = CIBlockElement::GetList(Array(), $arFilter, false, Array(), Array());
+
+         =array();
+
+        while ($fld = $qrating->GetNextElement()) {
+            $fields = $fld->GetFields();
+            $props = $fld->GetProperties();
+            $course[]=array(
+                'id' => $fields['ID'],
+                'uid' => $props['PATIENT']['VALUE'],
+                'description' => $fields['PREVIEW_TEXT'],
+                'name' =>  $fields['NAME'],
+            );
+        }
+
+        return $course;
+    }
 
     public function getTreatmentByUIdFullData($uid)
     {
@@ -161,7 +206,8 @@ class Treatments
             $props = $ald->GetProperties();
 
             $treatment_id =  $props['TREATMENTID']['VALUE'];
-            $treatment = 
+            $treatment = self::getTreatmentByTId($treatment_id);
+            $illness = self::getIllnessByIId($props['PROBLEM']['VALUE']);
             $activities[]=array(
                 'id' => $fields['ID'],
                 'name' =>  $fields['NAME'],
@@ -169,7 +215,8 @@ class Treatments
                 'begin' =>  $props['BEGIN']['VALUE'],
                 'end' =>  $props['END']['VALUE'],
                 'period' =>  $props['PERIOD']['VALUE'],
-                'illness' =>  $props['PROBLEM']['VALUE']
+                'illness' =>  $illness,
+                'treatment' =>  $treatment
             );
         }
         return $activities;
