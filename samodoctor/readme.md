@@ -11,3 +11,5 @@
  * Содержимое папки samodoctor копирутся в корень.
 
 ## Будте здоровы! ##
+
+Ссылка на front-end репозиторий https://github.com/Jasintar/iDoctor-ui
